@@ -2,6 +2,7 @@ const Router = require('koa-router')
 const passport = require('koa-passport')
 
 const Post = require('../models/Post')
+const Comment = require('../models/Comment')
 
 const router = new Router().prefix('/posts')
 
@@ -54,6 +55,10 @@ router.put('/', passport.authenticate('jwt', { session: false }), async (ctx) =>
 })
 
 router.delete('/:_id', passport.authenticate('jwt', { session: false }), async (ctx) => {
+  await Comment.deleteMany({
+    postId: ctx.params._id,
+    user: ctx.state.user._id
+  })  
   await Post.findOneAndRemove({
     _id: ctx.params._id,
     user: ctx.state.user._id

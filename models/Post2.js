@@ -28,13 +28,30 @@ const postSchema = new Schema({
       }
     }
   ],
+  comments: [
+    {
+      body: {
+        type: String,
+        required: true
+      },
+      user: {
+        type: Schema.Types.ObjectId,
+        ref: 'users',
+        required: true
+      },
+      createdDate: {
+        type: Date,
+        default: Date.now
+      }
+    }
+  ],
   createdDate: {
     type: Date,
     default: Date.now
   }
 })
 
-const populationFields = 'user'
+const populationFields = 'user comments.user'
 
 postSchema.post('save', async (doc) => {
   await doc.populate(populationFields).execPopulate()
